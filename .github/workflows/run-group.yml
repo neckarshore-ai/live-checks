@@ -1,0 +1,39 @@
+# Reusable: run one group and report it to healthchecks (AD-65 layer 1).
+# Public repository, public logs: the ping URL arrives only as a secret through
+# env, and scripts/check.py never prints a response body (ruling 1a).
+name: run-group
+
+on:
+  workflow_call:
+    inputs:
+      group:
+        type: string
+        required: true
+      probe:
+        type: boolean
+        default: false
+    secrets:
+      hc_ping_url:
+        required: false
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Run group
+        env:
+          GROUP: ${{ inputs.group }}
+          PROBE: ${{ inputs.probe }}
+          HC_PING_URL: ${{ secrets.hc_ping_url }}
+          LIVE_CHECKS_REQUIRE_HTTPS: "1"
+        run: |
+          args=("checks/${GROUP}.toml")
+          if [ "$PROBE" = "true" ]; then args+=(--probe); fi
+          python3 scripts/check.py "${args[@]}"

@@ -1,0 +1,31 @@
+# Group kaze-relay-live — SKELETON (ozzy, planning #4007). No schedule yet: the group has no
+# active assertion, and the runner refuses to report green until it has one.
+# Arming: add the assertions to checks/kaze-relay-live.toml, then add
+#   schedule:
+#     - cron: "<minute> * * * *"
+# below, and get the healthchecks row from bob (secret HC_PING_KAZE_RELAY_LIVE).
+name: kaze-relay-live
+
+on:
+  workflow_dispatch:
+    inputs:
+      probe:
+        description: "Add a text no page carries, to prove the /fail path"
+        type: boolean
+        default: false
+
+concurrency:
+  group: kaze-relay-live
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  run:
+    uses: ./.github/workflows/run-group.yml
+    with:
+      group: kaze-relay-live
+      probe: ${{ inputs.probe == true }}
+    secrets:
+      hc_ping_url: ${{ secrets.HC_PING_KAZE_RELAY_LIVE }}
