@@ -164,3 +164,7 @@ class ConfigFilesTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+class ProbeRed(unittest.TestCase):
+    def test_probe_red(self):
+        self.fail("ruleset probe — deliberately red")
