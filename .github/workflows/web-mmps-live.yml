@@ -1,0 +1,31 @@
+# Group web-mmps-live: snakeoil-check (+ /api/health), trustscope; clearpath and
+# pet-foster-finder are declared and skipped with their reason. Owner: bob.
+# Hourly at minute 23 (off the top of the hour, where GitHub delays the most).
+# The healthchecks row's grace sits above the worst-case delay (ruling 1c).
+name: web-mmps-live
+
+on:
+  schedule:
+    - cron: "23 * * * *"
+  workflow_dispatch:
+    inputs:
+      probe:
+        description: "Add a text no page carries, to prove the /fail path"
+        type: boolean
+        default: false
+
+concurrency:
+  group: web-mmps-live
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  run:
+    uses: ./.github/workflows/run-group.yml
+    with:
+      group: web-mmps-live
+      probe: ${{ inputs.probe == true }}
+    secrets:
+      hc_ping_url: ${{ secrets.HC_PING_WEB_MMPS_LIVE }}

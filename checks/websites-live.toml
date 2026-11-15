@@ -1,0 +1,15 @@
+# Group websites-live — AD-65 layer 1, planning #4005. SKELETON.
+# Assertions come from linus — planning #4006 (website content assertions).
+# Until the first active [[assert]] lands, the runner refuses to report green
+# (exit 2, no ping) and the workflow has no schedule. Arming = add the
+# assertions, add the schedule to .github/workflows/websites-live.yml, and ask bob
+# for the healthchecks row (he owns the count of the free plan's 20 jobs).
+#
+# Shape of one entry:
+#   [[assert]]
+#   name = "short public name"
+#   url = "https://public.example/"
+#   expect = ["text that only the real page carries"]
+#   # tls_min_days = 14        (optional)
+#   # active = false, reason = "..."   (declared, not checked)
+group = "websites-live"

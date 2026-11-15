@@ -1,0 +1,34 @@
+# Group web-mmps-live — the web MMPs (AD-65 layer 1, planning #4005).
+# Owner: bob. Every entry asserts page CONTENT, never the status code alone,
+# because Vercel can answer 200 with a bot-defence page. The TLS check runs
+# once per host. Only public URLs and public text belong in this file (1a).
+group = "web-mmps-live"
+
+[[assert]]
+name = "snakeoil-check home"
+url = "https://snakeoil-check.vercel.app/"
+expect = ["<title>Snake-Oil-or-Gold Check</title>"]
+
+[[assert]]
+name = "snakeoil-check api health"
+url = "https://snakeoil-check.vercel.app/api/health"
+expect = ['"status":"ok"', '"db":"reachable"']
+
+[[assert]]
+name = "trustscope home"
+url = "https://trustscope.neckarshore.ai/"
+expect = ["<title>TrustScope — open-source trust reports</title>"]
+
+# --- declared, not checked — each names what turns it back on -------------
+
+[[assert]]
+name = "clearpath home"
+url = "https://clearpath.neckarshore.ai/"
+active = false
+reason = "paused on Vercel until the Founder signs the DSFA (measured 2026-11-14: 503 DEPLOYMENT_PAUSED); add the expected text and activate on unpause"
+
+[[assert]]
+name = "pet-foster-finder home"
+url = "https://pet-foster-finder-app.vercel.app/"
+active = false
+reason = "parked by the Founder 2026-11-03; the URL is UNVERIFIED (measured 2026-11-14: 404 DEPLOYMENT_NOT_FOUND) — confirm the live URL before activating"

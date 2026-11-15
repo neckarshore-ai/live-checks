@@ -1,0 +1,37 @@
+# Keep-alive (AD-65 ruling 1c). GitHub disables scheduled workflows in a public
+# repository after 60 days without repository activity. Monthly, this job
+# re-enables every scheduled workflow, itself included, through the API.
+# UNMEASURED: whether a re-enable resets GitHub's 60-day clock (it cannot be
+# observed in less than 60 days). The safety net is the healthchecks lapse: a
+# disabled schedule stops pinging, and the row goes down after its grace.
+name: keepalive
+
+on:
+  schedule:
+    - cron: "41 4 7 * *"
+  workflow_dispatch:
+
+permissions:
+  actions: write
+  contents: read
+
+jobs:
+  enable:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Re-enable scheduled workflows
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          n=0
+          for f in .github/workflows/*.yml; do
+            grep -q '^  schedule:' "$f" || continue
+            gh api -X PUT "repos/${GITHUB_REPOSITORY}/actions/workflows/$(basename "$f")/enable"
+            echo "enabled $(basename "$f")"; n=$((n+1))
+          done
+          [ "$n" -gt 0 ] || { echo "::error::no scheduled workflow found"; exit 1; }
