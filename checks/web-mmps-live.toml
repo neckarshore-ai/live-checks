@@ -17,7 +17,7 @@ expect = ['"status":"ok"', '"db":"reachable"']
 [[assert]]
 name = "trustscope home"
 url = "https://trustscope.neckarshore.ai/"
-expect = ["<title>TrustScope — open-source trust reports</title>"]
+expect = ["<title>TrustScope: trust reports for open-source projects</title>"]
 
 # --- declared, not checked — each names what turns it back on -------------
 
